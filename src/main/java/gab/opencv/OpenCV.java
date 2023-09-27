@@ -1274,13 +1274,15 @@ public class OpenCV {
 	 */
 	public PImage copyTo(PImage img, PImage mask){
 		Mat mat_img = new Mat(img.height, img.width, CvType.CV_8UC4);
-		Mat mat_dst = new Mat(img.height, img.width, CvType.CV_8UC4);
+		Mat mat_dst = new Mat(img.height, img.width, CvType.CV_8UC4, new Scalar(255,255, 255, 0));
 		Mat mat_mask = new Mat(mask.height, mask.width, CvType.CV_8UC4);
 		toCv(img, mat_img);
 		ARGBtoBGRA(mat_img,mat_img);
 		toCv(mask, mat_mask);
 		ARGBtoBGRA(mat_mask,mat_mask);
-		Core.copyTo(mat_img, mat_dst, mat_mask);
+		Mat mask_1 = gray(mat_mask);
+		//Core.bitwise_and(mat_img, mat_img, mat_dst, mask_1);
+		Core.copyTo(mat_img, mat_dst, mask_1);
 		
 		PImage result = parent.createImage(mat_dst.width(), mat_dst.height(), PApplet.ARGB);
 		toPImage(mat_dst, result);
