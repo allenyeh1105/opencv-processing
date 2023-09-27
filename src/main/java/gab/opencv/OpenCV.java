@@ -1261,6 +1261,32 @@ public class OpenCV {
 	public String matToS(Mat mat){
 		return CvType.typeToString(mat.type());
 	}
+
+	/**
+	 * Copy a PImage into another PImage with mask
+	 * 
+	 * (Mainly used internally by OpenCV. Inspired by copyTo())
+	 * 
+	 * @param img
+	 * 			The PImage you want to copy.
+	 * @param mask
+	 * 			The PImage you want to use for copyTo.
+	 */
+	public PImage copyTo(PImage img, PImage mask){
+		Mat mat_img = new Mat(img.height, img.width, CvType.CV_8UC4);
+		Mat mat_dst = new Mat(img.height, img.width, CvType.CV_8UC4);
+		Mat mat_mask = new Mat(mask.height, mask.width, CvType.CV_8UC4);
+		toCv(img, mat_img);
+		ARGBtoBGRA(mat_img,mat_img);
+		toCv(mask, mat_mask);
+		ARGBtoBGRA(mat_mask,mat_mask);
+		Core.copyTo(mat_img, mat_dst, mat_mask);
+		
+		PImage result = parent.createImage(mat_dst.width(), mat_dst.height(), PApplet.ARGB);
+		toPImage(mat_dst, result);
+
+		return result;
+	}
 			
 	public PImage getInput(){
 		return inputImage;
